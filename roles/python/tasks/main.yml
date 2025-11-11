@@ -1,0 +1,44 @@
+---
+- name: Mettre à jour le système
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Installer Python et pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+    state: present
+
+- name: Copier l'application
+  copy:
+    src: ./app.py
+    dest: "/home/{{ app_user }}/app.py"
+    mode: '0755'
+
+- name: Copier requirements
+  copy:
+    src: ./requirements.txt
+    dest: "/home/{{ app_user }}/requirements.txt"
+
+- name: Installer le module venv si nécessaire
+  apt:
+    name: python3-venv
+    state: present
+
+- name: Créer un environnement virtuel pour Flask
+  command: python3 -m venv /home/{{ app_user }}/venv
+  args:
+    creates: /home/{{ app_user }}/venv
+
+- name: Installer les dépendances Python dans le virtualenv
+  pip:
+    requirements: "/home/{{ app_user }}/requirements.txt"
+    virtualenv: "/home/{{ app_user }}/venv"
+
+
+- name: Démarrer l'application Flask dans le virtualenv
+  shell: nohup /home/{{ app_user }}/venv/bin/python /home/{{ app_user }}/app.py &
+  args:
+    chdir: "/home/{{ app_user }}"

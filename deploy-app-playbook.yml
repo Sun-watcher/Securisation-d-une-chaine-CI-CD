@@ -1,0 +1,8 @@
+---
+- name: Launch flask on hosts with Ansible
+  hosts: hosts       
+  vars:
+    app_user: ubuntu
+  become: yes
+  roles:
+    - python
