@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Installer Ansible
-        run: sudo apt update && sudo apt install -y ansible
+        run: sudo apt update && sudo apt install -y ansible 
 
       - name: Déploiement application
-        run: ansible-playbook -i inventory/hosts deploy-app-playbook.yml
+        run: ansible-playbook -i inventory/hosts deploy-app-playbook.yml --ask-vault-pass
 
       - name: Durcissement serveur
         run: ansible-playbook -i inventory/hosts hardening.yml
