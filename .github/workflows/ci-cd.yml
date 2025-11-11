@@ -17,7 +17,7 @@ jobs:
         run: sudo apt update && sudo apt install -y ansible
 
       - name: Déploiement application
-        run: ansible-playbook -i inventory/hosts deploy_app-playbook.yml
+        run: ansible-playbook -i inventory/hosts deploy-app-playbook.yml
 
       - name: Durcissement serveur
         run: ansible-playbook -i inventory/hosts hardening.yml
