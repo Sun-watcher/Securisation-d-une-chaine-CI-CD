@@ -1,0 +1,40 @@
+name: CI/CD Ansible Secure Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Installer Ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Déploiement application
+        run: ansible-playbook -i inventory.ini deploy_app.yml
+
+      - name: Durcissement serveur
+        run: ansible-playbook -i inventory.ini hardening.yml
+
+      - name: SAST avec Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/ci"
+
+      - name: DAST avec ZAP
+        run: docker run -t owasp/zap2docker-stable zap-baseline.py -t http://192.168.1.100:5000
+
+      - name: Analyse dépendances
+        run: bandit -r .
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: reports/

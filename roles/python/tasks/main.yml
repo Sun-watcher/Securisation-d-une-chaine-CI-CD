@@ -13,13 +13,13 @@
 
 - name: Copier l'application
   copy:
-    src: ./app.py
+    src: ./server/app.py
     dest: "/home/{{ app_user }}/app.py"
     mode: '0755'
 
 - name: Copier requirements
   copy:
-    src: ./requirements.txt
+    src: ./inventory/requirements.txt
     dest: "/home/{{ app_user }}/requirements.txt"
 
 - name: Installer le module venv si nécessaire
